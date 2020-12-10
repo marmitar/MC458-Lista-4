@@ -1,0 +1,61 @@
+Chorãozinho está correto, a divisão em $\left\lfloor\frac{n}{3}\right\rfloor$ grupos é menos eficiente que usando $\left\lfloor\frac{n}{5}\right\rfloor$ grupos no algoritmo BFPRT, para $n$ suficientemente grande.
+
+\itemdsep{}
+
+Dividindo um vetor $A$ de tamanho $n$ em grupos de 3, a recuperação das medianas dos grupos terá complexidade $\Theta(\left\lceil\frac{n}{3}\right\rceil) = \Theta(n)$. A partir disso, a mediana das medianas será encontrada em tempo $T(\left\lceil\frac{n}{3}\right\rceil)$ e, após o particionamento em $O(n)$, estará na posição $k$. Para a análise de pior caso, podemos assumir que $k$ não é a solução e a próxima etapa da busca será na maior da partições, com tamanho $n_p = \max\{k - 1, n - k\}$ e levando tempo $T(n_p)$.
+
+Note que existem pelo menos $\left\lceil \frac{1}{2} \left\lceil \frac{n}{3} \right\rceil - 1 \right\rceil$ grupos com medianas menores que o elemento em $k$, desconsiderando o grupo com menos de 3 elementos, que pode ser o próprio grupo de $k$. Em cada um desses, teremos garantidos 2 elementos menores que $A_k$.
+
+Podemos considerar, então, um dos piores casos para a complexidade, em que $k$ assume seu menor valor possível. Assim:
+\begin{align*}
+    \#\left(A_<\right)
+    &\leq 2 \left\lceil \frac{1}{2} \left\lceil \frac{n}{3} \right\rceil - 1 \right\rceil + 1 \\
+    &\leq 2 \left(\frac{1}{2} \left(\frac{n}{3} + 1\right) - 1 + 1\right) + 1\\
+    &\leq \frac{n}{3} + 2
+\end{align*}
+
+Nesse caso, a maior das partições terá $n_p = n - k \geq \frac{2n}{3} - 2 \geq \left\lfloor\frac{2n}{3}\right\rfloor - 2$ elementos. A análise considerando o maior valor possível de $k$ chega em uma mesma cota inferior para $n_p$.
+
+Portanto, considerando que $T(n)$ é crescente e $a$ positivo, a recorrência do tempo de execução do algoritmo no pior caso será:
+\begin{align*}
+    T(n)
+    &= T(\lceil n / 3 \rceil) + T(n_p) + \Theta(n) \\
+    &\geq T\left(\left\lceil \frac{n}{3} \right\rceil\right) + T\left(\left\lfloor\frac{2n}{3}\right\rfloor - 2\right) + a n && \text{(quando $n > 4$)}
+\end{align*}
+
+Assumindo $0 < T(1) \leq T(2) \leq t_0$, podemos mostrar que $T(n) \geq c n \lg n$, para algum $c > 0$. Por fim, temos então que, quando o vetor é divido em grupos de 3 elementos, $T(n) \in \Omega(n \lg n)$, que é assintoticamente menos eficiente que o algoritmo original.
+
+\itemdsep{}
+
+\begin{proof}[\textbf{Demonstração}]
+    Considere a constante $c = \frac{a}{5}$.
+
+    \begin{ncasos}
+        \item[Caso base:] Seja $3 \leq n \leq 8$. Logo,
+        \[
+            T(n) \geq T(\lceil n / 3 \rceil) + T(n_p) + a n \geq a n
+        \]
+        Mas,
+        \[
+            c n \lg n \leq \frac{a}{5} n \lg 8 = \frac{3}{5} a n \leq T(n)
+        \]
+
+        \item[Hipótese indutiva:] Suponha que $T(k) \geq c k \lg k$ para todo $3 \leq k < n$ e algum $n > 8$.
+
+        \item[Passo indutivo:] Seja $n \geq 9$. Logo,
+        \begin{align*}
+            T(n)
+            &\geq T\left(\left\lceil \frac{n}{3} \right\rceil\right) + T\left(\left\lfloor\frac{2n}{3}\right\rfloor - 2\right) + a n \\
+            &\geq \left[ c \left\lceil \frac{n}{3} \right\rceil \lg\left\lceil \frac{n}{3} \right\rceil \right] + \left[ c \left(\left\lfloor\frac{2n}{3}\right\rfloor - 2\right) \lg\left(\left\lfloor\frac{2n}{3}\right\rfloor - 2 \right) \right] + a n \\
+            &\geq c \frac{n}{3} \lg\left(\frac{n}{3}\right) + c \left(\frac{2n}{3} - 3\right) \lg\left(\frac{2n}{3} - 3 \right) + a n \\
+            &= c \frac{n}{3} \lg\left(\frac{n}{3}\right) + c \left(\frac{2n}{3} - 3\right) \lg\left(\frac{2n - 9}{3}\right) + a n \\
+            &\geq c \frac{n}{3} \lg\left(\frac{n}{3}\right) + c \left(\frac{2n}{3} - 3\right) \lg\left(\frac{n}{3}\right) + a n \\
+            &= c \frac{3n}{3} \lg\left(\frac{n}{3}\right) - 3 c \lg\left(\frac{n}{3}\right) + a n \\
+            &= c n \lg n  - c n \lg 3 - 3 c \lg n + 3 c \lg 3 + an \\
+            &> c n \lg n  - c n \lg 3 - 3 c n + an \\
+            &= c n \lg n + (a - (3 + \lg 3) c) n \\
+            &\geq c n \lg n + (a - 5 c) n \\
+            &= c n \lg n
+        \end{align*}
+    \end{ncasos}
+\end{proof}

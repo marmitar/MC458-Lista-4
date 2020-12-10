@@ -1,0 +1,24 @@
+A única tarefa possível é a de Chorãozinho, ou seja, é impossível que um algoritmo para este problema tenha complexidade de pior caso $O(n)$.
+
+\itemdsep{}
+
+Note que um algoritmo que resolve o problema dado não tem acesso à capacidade $c(R)$ de um resistor $R$, podendo apenas saber se $c(R) < c(r)$, $c(R) = c(r)$ ou $c(R) > c(r)$, para um resistor $r$ de cor diferente. Não é possível nem mesmo saber $c(R) - c(r)$ ou $c(R) / c(r)$, que poderia servir como uma medida de distância entre os resistores. Portanto, o algoritmo deve ser baseado puramente em comparações das capacidades.
+
+Supondo então um algoritmo que resolve o problema, ele deve retornar uma permutação dos resistores amarelos $A$ e outra dos verdes $V$, em pares $(A_i, V_j)$ com $0 < i, j \leq n$. Logo, esse algoritmo deve ser capaz de escolher entre $\left(n!\right)^2$ soluções, das quais $n!$ são corretas, já que a posição dos pares não é importante, bastando que $c(A_i) = c(V_j)$ em cada par $(A_i, V_j)$ da solução.
+
+Podemos ver o algoritmo como uma Árvore de Decisão Ternária, onde cada nó interno é uma comparação de capacidade entre um $A_i$ e um $V_j$, as arestas são os resultados das camparações e as folhas são as soluções. Portanto, o algoritmo, cuja árvore tem altura $h$, deve conter $3^h \geq \left(n!\right)^2$ folhas. Logo, $h \geq \log_3 \left(\left(n!\right)^2\right) = 2 \log_3 \left(n!\right)$.
+
+Apesar disso, um algoritmo ótimo poderia organizar as folhas de forma que as $n!$ soluções corretas apareçam em uma mesma subárvore, decidindo entre elas de forma costante. Nesse caso, a subárvore teria altura $h' = \left\lceil\log_3(n!)\right\rceil$, e a solução poderia ser encontrada na altura $h^* = h - h' \geq 2 \log_3(n!) - \left\lceil\log_3(n!)\right\rceil > \log_3(n!) - 1$, ou seja, $h^* \geq \log_3(n!)$. Entretanto, isso não reduziria a complexidade do algoritmo.
+
+Note que $(n!)^2 \geq n^n$, portanto:
+\begin{align*}
+    h^* &\geq \log_3(n!) \\
+    &\geq \frac{1}{2} \log_3\left(n^n\right) \\
+    &= \frac{1}{2} \frac{n \lg n}{\lg 3} \\
+    &= \frac{n \lg n}{2 \lg 3} \\
+    &\geq \frac{n \lg n}{4}
+\end{align*}
+
+Com isso, podemos afirmar que o tempo de execução do algoritmo em pior caso será no mínimo $T(n) \geq h^* \geq \frac{1}{4} n \lg n$. Por fim, temos então que $T(n) \in \Omega(n \lg n)$, ou seja, $T(n) \not\in O(n)$.
+
+Um algoritmo também poderia ser implementado com base em comparações binárias, representado por uma Árvore de Decisão Binária. Isso não alteraria a complexidade, mas poderia aumentar o número de comparações necessárias.

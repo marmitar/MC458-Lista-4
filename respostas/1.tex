@@ -1,0 +1,50 @@
+\begin{codebox}
+    \Procname{$\proc{Vizinhança-I-Ésimo}(V, n, i, l)$}
+    \li \Comment Acha o $i$-ésimo menor elemento de $V$.
+    \li $\proc{Select-BFPRT}(V, 1, n, i)$ \label{linha:acha1}
+    \li $\id{val} \gets V[i]$   \label{linha:acha2}
+    \li
+    \li \Comment Monta os pares com a distância (absoluto
+    \li \Comment da diferença) de cada elemento até o
+    \li \Comment $i$-ésimo, junto com o próprio elemento
+    \li Seja $P[1 \twodots n]$ um novo vetor de pares de inteiros. \label{linha:criap}
+    \li \kw{para} $j = 1$ \kw{até} $n$ \label{linha:forp}
+        \Do
+    \li     $\id{dist} \gets \big|V[j] - \id{val}\big|$ \label{linha:dist}
+    \li     $P[j] \gets \big(\id{dist}\bm{,} V[j]\big)$ \label{linha:par}
+        \End
+    \li $\proc{Select-BFPRT}(P, 1, n, l)$ \label{linha:separa}
+    \li
+    \li \Comment Copia o resultado para um novo vetor.
+    \li Seja $A[1 \twodots l] $ um novo vetor de inteiros. \label{linha:criaa}
+    \li \kw{para} $j = 1$ \kw{até} $l$ \label{linha:fora}
+        \Do
+    \li     $\big(\id{dist}\bm{,} \id{num}\big) \gets P[j]$ \label{linha:numa}
+    \li     $A[j] \gets \id{num}$ \label{linha:montaa}
+        \End
+    \li
+    \li \kw{retorna} $A$ \label{linha:reta}
+\end{codebox}
+
+\itemdsep{}
+
+O algoritmo acima se baseia no fato de que o $\proc{Select-BFPRT}$, como apresentado em aula, além de encontrar o $i$-ésimo menor elemento, também particiona o vetor $V$ de forma que elementos menores que o $i$-ésimo se encontram nas primeiras $i-1$ posições e os maiores nas últimas $n-i$ posições. Isso implica que o $i$-ésimo elemento vai estar na posição $V_i$.
+
+\itemdsep{}
+
+\renewcommand{\qedsymbol}{}
+\begin{proof}[\textbf{Corretude}]
+    O primeiro passo do algoritmo é encontrar o $i$-ésimo menor elemento de $V$, que após o $\proc{Select-BFPRT}$ se encontra na posição $i$ de $V$ (linhas \ref{linha:acha1} e \ref{linha:acha2}). Em seguida, é montado um novo vetor $P$ de pares, onde $P_j = \left(\text{dist}(V_j, V_i), V_j\right)$ e $\text{dist}(a, b) = \abs{a - b}$ (linhas \ref{linha:criap} à \ref{linha:par}). Os pares $P_j$ são comparados em ordem lexicográfica, em que o primeiro elemento do par tem maior precedência na comparação.
+
+    Após isso, $\proc{Select-BFPRT}$ é chamado com $P$ para encontrar o $l$-ésimo menor, de acordo com a distância do valor até $V_i$ (linha \ref{linha:separa}). Devido ao algoritmo de particionamento, temos que todos os pares $P_j$, com $j \leq l$, compõe as $l$ menores distâncias até o $i$-ésimo elemento, ou seja, temos ali os $l$ elementos mais próximos do $i$-ésimo.
+
+    A última etapa (linhas \ref{linha:criaa} a \ref{linha:montaa}) apenas copia os resultados encontrados anteriormente, descartando as distâncias utilizadas para comparação e particionamento.
+\end{proof}
+
+\itemdsep{}
+
+\begin{proof}[\textbf{Complexidade}]
+    Como o algoritmo $\proc{Select-BFPRT}$ é $O(n)$, então as linhas $\ref{linha:acha1}$ até $\ref{linha:separa}$ executam em tempo também $O(n)$. Além disso, as linhas \ref{linha:criaa} a \ref{linha:montaa} executam em $O(l)$. Portanto, o algoritmo como um todo tem complexidade $O(n + l)$.
+
+    No entanto, é importante notar que $l \leq n$. Logo, podemos afirmar que o algoritmo executa em tempo $O(n)$, como requerido.
+\end{proof}
